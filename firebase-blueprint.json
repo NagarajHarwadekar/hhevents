@@ -1,0 +1,376 @@
+{
+  "entities": {
+    "profile": {
+      "title": "User and Staff Profile",
+      "description": "User profile with role authorization information and contact coordinates.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication User ID"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Full name or designation"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "super_admin", "manager", "staff", "applicant"],
+          "description": "Role determining access rights"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Optional contact number"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account registration timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Profile last amended timestamp"
+        }
+      },
+      "required": ["uid", "email", "displayName", "role"]
+    },
+    "hall": {
+      "title": "Hall Wing and Facility",
+      "description": "Auditoriums, dining halls, VIP suites, and outdoor grounds within CommunityHall.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Facility identifier e.g. grand-auditorium"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the hall section"
+        },
+        "tagline": {
+          "type": "string",
+          "description": "Architectural or functional tagline"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["auditorium", "dining", "suites", "outdoor", "ancillary"],
+          "description": "Wing classification"
+        },
+        "capacity": {
+          "type": "number",
+          "description": "Maximum capacity in persons"
+        },
+        "dimensions": {
+          "type": "string",
+          "description": "Spatial dimensions"
+        },
+        "squareFeet": {
+          "type": "number",
+          "description": "Total area in square feet"
+        },
+        "baseRatePerSlot": {
+          "type": "number",
+          "description": "Rental price per session slot in INR"
+        },
+        "features": {
+          "type": "string",
+          "description": "JSON array string or highlight features"
+        },
+        "equipmentIncluded": {
+          "type": "string",
+          "description": "JSON array string of provided equipment"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Image asset URL"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "maintenance", "reserved"],
+          "description": "Current operational status"
+        }
+      },
+      "required": ["id", "name", "category", "capacity", "baseRatePerSlot", "status"]
+    },
+    "bookingRequest": {
+      "title": "Hall Booking Request",
+      "description": "Reservation submission containing event particulars, applicant coordinates, and administrative clearance state.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique booking reference ID e.g. CH-2026-1042"
+        },
+        "applicantName": {
+          "type": "string",
+          "description": "Full name of applicant"
+        },
+        "organizationName": {
+          "type": "string",
+          "description": "Optional organization or family trust"
+        },
+        "applicantEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Applicant primary email"
+        },
+        "applicantPhone": {
+          "type": "string",
+          "description": "Applicant contact telephone"
+        },
+        "applicantUid": {
+          "type": "string",
+          "description": "Auth UID if submitted by an authenticated account"
+        },
+        "eventType": {
+          "type": "string",
+          "enum": ["wedding", "reception", "cultural_gala", "corporate_conference", "exhibition", "community_meeting", "other"],
+          "description": "Type of event"
+        },
+        "eventTitle": {
+          "type": "string",
+          "description": "Ceremony or convention title"
+        },
+        "eventDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Event calendar date in YYYY-MM-DD"
+        },
+        "timeSlot": {
+          "type": "string",
+          "enum": ["morning", "evening", "full_day"],
+          "description": "Slot window"
+        },
+        "estimatedAttendees": {
+          "type": "number",
+          "description": "Headcount estimate"
+        },
+        "facilityIds": {
+          "type": "string",
+          "description": "Requested hall wings JSON array string"
+        },
+        "addionalServices": {
+          "type": "string",
+          "description": "Requested auxiliary services JSON array string"
+        },
+        "specialRequirements": {
+          "type": "string",
+          "description": "Custom requirements and dietary notes"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "confirmed", "rejected", "cancelled", "completed"],
+          "description": "Lifecycle state of reservation"
+        },
+        "totalEstimate": {
+          "type": "number",
+          "description": "Total rental cost calculation in INR"
+        },
+        "advancePaymentStatus": {
+          "type": "string",
+          "enum": ["unpaid", "partial", "paid", "advance_paid", "fully_paid", "refunded"],
+          "description": "Deposit and payment clearance state"
+        },
+        "adminRemarks": {
+          "type": "string",
+          "description": "Official comments or inspection conditions by hall administration"
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Amended timestamp"
+        }
+      },
+      "required": ["id", "applicantName", "applicantEmail", "applicantPhone", "eventType", "eventDate", "timeSlot", "status", "totalEstimate", "submittedAt"]
+    },
+    "maintenanceBlock": {
+      "title": "Facility Maintenance Blackout Block",
+      "description": "Scheduled preventative turnover, servicing, and technical maintenance that locks availability.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Maintenance task identifier"
+        },
+        "facilityIds": {
+          "type": "string",
+          "description": "Wings affected"
+        },
+        "title": {
+          "type": "string",
+          "description": "Task description"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["hvac", "electrical", "acoustics", "sanitation", "plumbing", "general"],
+          "description": "System category"
+        },
+        "scheduledDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Scheduled calendar date YYYY-MM-DD"
+        },
+        "slot": {
+          "type": "string",
+          "enum": ["morning", "evening", "full_day"],
+          "description": "Timing slot blocked"
+        },
+        "technicianName": {
+          "type": "string",
+          "description": "Contractor or engineer in charge"
+        },
+        "technicianPhone": {
+          "type": "string",
+          "description": "Emergency mobile contact"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["scheduled", "in_progress", "completed", "cancelled"],
+          "description": "Execution status"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Detailed scope of work and turnover notes"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Scheduled timestamp"
+        }
+      },
+      "required": ["id", "title", "category", "scheduledDate", "slot", "status"]
+    },
+    "auditLog": {
+      "title": "System Audit Trail",
+      "description": "Immutable log of administrative operations, approvals, cancellations, and config updates.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique audit ID"
+        },
+        "action": {
+          "type": "string",
+          "description": "Action designation e.g. BOOKING_APPROVED"
+        },
+        "performedBy": {
+          "type": "string",
+          "description": "Officer email or UID"
+        },
+        "targetEntity": {
+          "type": "string",
+          "description": "booking, maintenance, setting, or profile"
+        },
+        "targetId": {
+          "type": "string",
+          "description": "Identifier of affected entity"
+        },
+        "details": {
+          "type": "string",
+          "description": "Summary of transaction or modifications"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of action"
+        }
+      },
+      "required": ["id", "action", "performedBy", "timestamp"]
+    },
+    "setting": {
+      "title": "Platform and Venue Settings",
+      "description": "Operational hours, financial variables, and contact coordinates.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Configuration document identifier (typically 'general')"
+        },
+        "productName": {
+          "type": "string",
+          "description": "Always 'CommunityHall'"
+        },
+        "contactEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Official contact email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Official contact phone"
+        },
+        "morningSlotHours": {
+          "type": "string",
+          "description": "Morning shift window"
+        },
+        "eveningSlotHours": {
+          "type": "string",
+          "description": "Evening shift window"
+        },
+        "securityDepositAmount": {
+          "type": "number",
+          "description": "Mandatory refundable deposit amount in INR"
+        },
+        "taxRatePercentage": {
+          "type": "number",
+          "description": "Applicable GST tax percentage"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last modified timestamp"
+        }
+      },
+      "required": ["id", "productName", "contactEmail", "contactPhone", "securityDepositAmount", "taxRatePercentage"]
+    }
+  },
+  "firestore": {
+    "/profiles/{uid}": {
+      "schema": {
+        "$ref": "#/entities/profile"
+      },
+      "description": "User profiles and administrator authorization records"
+    },
+    "/halls/{hallId}": {
+      "schema": {
+        "$ref": "#/entities/hall"
+      },
+      "description": "Public hall wings, seating capacities, and base rental tariffs"
+    },
+    "/bookingRequests/{requestId}": {
+      "schema": {
+        "$ref": "#/entities/bookingRequest"
+      },
+      "description": "All public and admin booking applications with full reservation particulars"
+    },
+    "/maintenanceBlocks/{blockId}": {
+      "schema": {
+        "$ref": "#/entities/maintenanceBlock"
+      },
+      "description": "Scheduled preventative turnover, servicing, and technical blackout blocks"
+    },
+    "/auditLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/auditLog"
+      },
+      "description": "Immutable security and booking transaction audit trail"
+    },
+    "/settings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/setting"
+      },
+      "description": "Venue operational parameters, slot hours, and financial configurations"
+    }
+  }
+}

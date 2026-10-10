@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --gold-primary: #C88D23;
+    --gold-light: #DFAB4C;
+    --gold-dark: #9A6611;
+    --gold-tint: #FAF2E4;
+    --burgundy: #CE3522;
+    --bg-page: #FDFBF9;
+    --bg-card: #FFFFFF;
+    --bg-stone: #F6F5F4;
+    --text-primary: #161210;
+    --text-secondary: #58453E;
+    --text-muted: #7E7873;
+    --border-light: #E8E5E1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #FDFBF9;
+    color: #161210;
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, .font-serif-heading {
+    font-family: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
+    letter-spacing: -0.015em;
+    color: #161210;
+  }
+
+  /* Elegant warm scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F6F5F4;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D8D3CC;
+    border-radius: 4px;
+    border: 2px solid #F6F5F4;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C88D23;
+  }
+}
+
+/* Banquet Hall Pro Cards & Surfaces */
+.banquet-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E8E5E1;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px -2px rgba(22, 18, 16, 0.04), 0 10px 24px -6px rgba(22, 18, 16, 0.05);
+  transition: all 0.3s ease;
+}
+
+.banquet-card:hover {
+  border-color: #D6CCA9;
+  box-shadow: 0 12px 30px -8px rgba(200, 141, 35, 0.12), 0 4px 12px -2px rgba(22, 18, 16, 0.04);
+}
+
+.banquet-card-gold {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FAF4EA 100%);
+  border: 1px solid #EAD8BF;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px -4px rgba(200, 141, 35, 0.08);
+}
+
+.banquet-gold-text {
+  color: #C88D23;
+}
+
+.banquet-gold-gradient {
+  background: linear-gradient(135deg, #A86D12 0%, #C88D23 50%, #9A6611 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Backward-compatible luxury card aliases mapped to Banquet Hall Pro */
+.luxury-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E8E5E1;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -4px rgba(22, 18, 16, 0.05);
+  color: #161210;
+}
+
+.luxury-card-gold {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FAF4EA 100%);
+  border: 1px solid #EAD8BF;
+  border-radius: 1.25rem;
+  box-shadow: 0 6px 24px -6px rgba(200, 141, 35, 0.1);
+  color: #161210;
+}
+
+.luxury-gold-text {
+  color: #C88D23;
+}
+
+/* Mobile Safe Area */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}

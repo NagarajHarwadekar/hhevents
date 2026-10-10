@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Deny-by-Default Fallback
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Security Primitives & Role Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'nagarajharwadekar@gmail.com' ||
+        (request.auth.token.email != null && request.auth.token.email.matches('.*@communityhall\\.org$'))
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrappedAdmin() ||
+        (exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role in ['admin', 'super_admin'])
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // 1. User and Administrative Profiles
+    match /profiles/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == uid && (
+        request.resource.data.role == 'applicant' || isBootstrappedAdmin()
+      );
+      allow update: if isAdmin() || (
+        isSignedIn() && request.auth.uid == uid &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid', 'email'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // 2. Hall Wings and Facilities (Public Information)
+    match /halls/{hallId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. Confidential Booking Requests (Contains Applicant PII)
+    match /bookingRequests/{requestId} {
+      // Applicant can ONLY read their own booking if authenticated, or Admin can read all
+      allow read: if isAdmin() || (isSignedIn() && resource.data.applicantUid == request.auth.uid);
+      
+      // Public can submit a new booking request with pending status
+      allow create: if request.resource.data.status == 'pending' &&
+                       request.resource.data.applicantName is string &&
+                       request.resource.data.applicantEmail is string &&
+                       request.resource.data.applicantPhone is string &&
+                       request.resource.data.eventDate is string &&
+                       request.resource.data.timeSlot in ['morning', 'evening', 'full_day'];
+                       
+      // Only authorized administrators can approve, reject, confirm, or modify bookings
+      allow update, delete: if isAdmin();
+    }
+
+    // 4. Public Booking Availability & Status (Sanitized Projection - ZERO Applicant PII)
+    match /publicBookings/{requestId} {
+      // Public can read to verify availability and track event progress without PII exposure
+      allow read: if true;
+      
+      // Created alongside booking request with pending status
+      allow create: if request.resource.data.status == 'pending' &&
+                       request.resource.data.eventDate is string &&
+                       request.resource.data.timeSlot in ['morning', 'evening', 'full_day'];
+                       
+      // Only Admin can update status transitions or delete
+      allow update, delete: if isAdmin();
+    }
+
+    // 5. Facility Maintenance Blackout Blocks (Public View for Calendar Blackouts)
+    match /maintenanceBlocks/{blockId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 6. Audit Trail Logs (Strictly Protected Admin Area)
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // 7. Venue and System Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

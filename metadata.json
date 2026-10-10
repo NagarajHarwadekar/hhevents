@@ -1,0 +1,6 @@
+{
+  "name": "CommunityHall",
+  "description": "H H Events & Conventions - Premier convention hall, banquet dining wing, and reservation platform in Panemangalore, Bantwal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
